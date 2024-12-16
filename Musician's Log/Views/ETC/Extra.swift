@@ -38,3 +38,56 @@ extension Color {
         )
     }
 }
+extension Date {
+    var weekday: Int { Calendar.current.component(.weekday, from: self) }
+    var firstDayOfTheMonth: Date {
+        Calendar.current.dateComponents([.calendar, .year,.month], from: self).date!
+    }
+    var monthString: String {
+        if let monthInt = Calendar.current.dateComponents([.month], from: self).month {
+            return Calendar.current.monthSymbols[monthInt-1]
+        }
+        return ""
+    }
+    var monthInt: Int {
+        if let monthInt = Calendar.current.dateComponents([.month], from: self).month {
+            return monthInt
+        }
+        return 0
+    }
+    var yearString: String {
+        if let year = Calendar.current.dateComponents([.year], from: self).year {
+            return "\(year)"
+        }
+        return ""
+    }
+    var yearInt: Int {
+        if let year = Calendar.current.dateComponents([.year], from: self).year {
+            return year
+        }
+        return 0
+    }
+    var dayInt: Int {
+        if let day = Calendar.current.dateComponents([.day], from: self).day {
+            return day
+        }
+        return 0
+    }
+}
+
+extension View {
+    func swipe(
+        up: @escaping (() -> Void) = {},
+        down: @escaping (() -> Void) = {},
+        left: @escaping (() -> Void) = {},
+        right: @escaping (() -> Void) = {}
+    ) -> some View {
+        return self.gesture(DragGesture(minimumDistance: 0, coordinateSpace: .local)
+            .onEnded({ value in
+                if value.translation.width < 0 { left() }
+                if value.translation.width > 0 { right() }
+                if value.translation.height < 0 { up() }
+                if value.translation.height > 0 { down() }
+            }))
+    }
+}

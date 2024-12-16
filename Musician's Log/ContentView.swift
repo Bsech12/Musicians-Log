@@ -16,13 +16,13 @@ struct ContentView: View {
     var body: some View {
         TabView(selection: $tabSelected) {
             Tab("History", systemImage: "book", value: 0) {
-                Text("History")
+                History()
             }
             Tab("Today", systemImage: "music.note.house.fill", value: 1) {
                 Today()
             }
             Tab("Todo", systemImage: "checklist.unchecked", value: 2) {
-                Text("Todo")
+                Todo()
             }
             
         }
