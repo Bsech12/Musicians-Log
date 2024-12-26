@@ -12,7 +12,7 @@ import SwiftData
 struct Musician_s_LogApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            MusicLogStorage.self, ToDoStorage.self, Tag.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 

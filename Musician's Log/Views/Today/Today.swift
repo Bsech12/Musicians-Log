@@ -8,20 +8,13 @@
 import SwiftUI
 
 struct Today: View {
-    @State var isAnimating = false
     
     var body: some View {
         NavigationView {
             
             List {
                 Section {
-                    Button {
-                        
-                        //TODO: record button
-                        
-                    } label: {
-                        RecordWidget()
-                    }
+                    RecordWidget()
                 }
                 Section("Tools") {
                     HStack {
@@ -50,8 +43,8 @@ struct Today: View {
             .scrollContentBackground(.hidden)
             .toolbar {
                 ToolbarItem {
-                    Button {
-                        // TODO: Settings
+                    NavigationLink {
+                        Settings()
                     } label: {
                         Image(systemName: "gear")
                             .resizable()
@@ -64,19 +57,14 @@ struct Today: View {
                     .edgesIgnoringSafeArea(.all)
                 MeshGradient(width: 3, height: 3, points: [
                     [0.0, 0.0], [0.5, 0.0], [1.0, 0.0],
-                    [0.0, 0.5], [isAnimating ? 0.1 : 0.8, 0.5], [1.0, isAnimating ? 0.5 : 1],
+                    [0.0, 0.5], [ 0.8, 0.5], [1.0, 1],
                     [0.0, 0.8], [0.5, 0.8], [0.8, 0.8]
                 ], colors: [
-                    .purple, isAnimating ? .red : .purple, .red,
-                    isAnimating ? .listGrey : .red, .purple, .listGrey,
+                    .purple,  .purple, .red,
+                     .red, .purple, .listGrey,
                     .listGrey, .listGrey, .listGrey
                 ])
                 .edgesIgnoringSafeArea(.all)
-                .onAppear() {
-                    withAnimation(.easeInOut(duration: 12.0).repeatForever(autoreverses: true)) {
-                        isAnimating.toggle()
-                    }
-                }
             }
             .navigationTitle("Today")
             
@@ -95,6 +83,15 @@ struct Today: View {
     }
 }
 
+extension Animation {
+    func `repeat`(while expression: Bool, autoreverses: Bool = true) -> Animation {
+        if expression {
+            return self.repeatForever(autoreverses: autoreverses)
+        } else {
+            return self
+        }
+    }
+}
 #Preview {
     Today()
 }

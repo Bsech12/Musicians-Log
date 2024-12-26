@@ -6,13 +6,16 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct History: View {
     
-    @State var isAnimating = false
     @State var dateFocused = Date()
     @State var isThisMonth: CalTileStyle = .today
     @State var selected: String = "\(Date().dayInt)"
+    
+    
+    @Query(sort: \MusicLogStorage.startTime) var logs: [MusicLogStorage]
     
     let calendar = Calendar.current
     
@@ -24,20 +27,14 @@ struct History: View {
                     .edgesIgnoringSafeArea(.all)
                 MeshGradient(width: 3, height: 3, points: [
                     [0.0, 0.0], [0.5, 0.0], [1.0, 0.0],
-                    [0.0, 0.5], [isAnimating ? 0.1 : 0.8, 0.5], [1.0, isAnimating ? 0.5 : 1],
+                    [0.0, 0.5], [ 0.8, 0.5], [1.0, 1],
                     [0.0, 0.8], [0.5, 0.8], [0.8, 0.8]
                 ], colors: [
-                    .blue, isAnimating ? .purple : .blue, .purple,
-                    isAnimating ? .listGrey : .purple, .blue, .listGrey,
+                    .blue,  .blue, .purple,
+                     .purple, .blue, .listGrey,
                     .listGrey, .listGrey, .listGrey
                 ])
                 .edgesIgnoringSafeArea(.all)
-                .onAppear() {
-                    withAnimation(.easeInOut(duration: 12.0).repeatForever(autoreverses: true)) {
-                        isAnimating.toggle()
-                    }
-                }
-                
                 
                 VStack {
                     LazyVGrid(columns: [GridItem(spacing: 0), GridItem(spacing: 0), GridItem(spacing: 0), GridItem(spacing: 0), GridItem(spacing: 0), GridItem(spacing: 0), GridItem(spacing: 0)], spacing: 5) {
@@ -64,10 +61,9 @@ struct History: View {
                     Spacer()
                     
                     ScrollView {
-                        CalendarHistoryItem()
-                        CalendarHistoryItem()
-                        CalendarHistoryItem()
-                        
+                        ForEach(logs) {i in
+                            CalendarHistoryItem(color: .red, name: i.title, time1: i.startTime.formatted(date: .omitted, time: .standard), time2: i.endTime?.formatted(date: .omitted, time: .standard) ?? "xx:xx")
+                        }
                     }
                     .background(Material.bar)
                     

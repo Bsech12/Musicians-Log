@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct CalendarHistoryItem: View {
-    @State var color: Color = .red
-    @State var name: String = "Calendar History Item"
-    @State var time1: String = "12:00 PM"
-    @State var time2: String = "4:00 PM"
+    @State var color: Color
+    @State var name: String
+    @State var time1: String
+    @State var time2: String
     var body: some View {
         HStack {
             Text(" ")
@@ -31,5 +31,5 @@ struct CalendarHistoryItem: View {
 }
 
 #Preview {
-    CalendarHistoryItem()
+    CalendarHistoryItem(color: .red, name: "hi", time1: "xx:xx", time2: "xx:xx")
 }
