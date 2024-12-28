@@ -14,7 +14,7 @@ struct RecordWidget: View {
     @State var currentRecording: MusicLogStorage = MusicLogStorage(title: "New")
     @State var isPopoverPresented: Bool = false
     @State var isRecording = false
-    @State var timeSoFar: String = "00:00"
+    @State var timeSoFar: String = "00:00:00"
     
     @Environment(\.modelContext) var modelContext
     
@@ -36,8 +36,14 @@ struct RecordWidget: View {
                     Text("Latest: \(timeSoFar)")
                         .onReceive(timer) {_ in
                             if (isRecording) {
-                                let difference = currentRecording.startTime.differenceBetween(dateToUse: Date())
-                                self.timeSoFar = "\(difference.minute ?? 0):\(difference.second ?? 0)"
+                                let difference = Calendar.current.date(from: currentRecording.startTime.differenceBetween(dateToUse: Date()))
+                                let formatter: DateFormatter = {
+                                    let formatter = DateFormatter()
+                                    formatter.dateFormat = "HH:mm:ss"
+                                    return formatter
+                                }()
+                                
+                                self.timeSoFar = "\(formatter.string(from: difference!))"
                             }
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)

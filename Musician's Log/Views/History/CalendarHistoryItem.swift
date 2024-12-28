@@ -25,7 +25,7 @@ struct CalendarHistoryItem: View {
                 Text(time1)
                 Text(time2)
             }
-            .padding()
+            .padding([.leading, .trailing])
         }
     }
 }

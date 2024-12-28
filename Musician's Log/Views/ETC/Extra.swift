@@ -43,6 +43,10 @@ extension Date {
     var firstDayOfTheMonth: Date {
         Calendar.current.dateComponents([.calendar, .year,.month], from: self).date!
     }
+    
+    var firstDayOfTheWeek: Date {
+        Calendar.current.dateComponents([.calendar, .yearForWeekOfYear, .weekOfYear], from: self).date!
+    }
     var monthString: String {
         if let monthInt = Calendar.current.dateComponents([.month], from: self).month {
             return Calendar.current.monthSymbols[monthInt-1]
@@ -76,6 +80,9 @@ extension Date {
     func differenceBetween(dateToUse: Date) -> DateComponents{
         let diffs = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: self, to: dateToUse)
         return diffs
+    }
+    func basicallyTheSameAs(_ dateToUse: Date) -> Bool {
+        return yearString == dateToUse.yearString && monthInt == dateToUse.monthInt && dayInt == dateToUse.dayInt
     }
     
 }

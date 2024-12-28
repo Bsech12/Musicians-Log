@@ -42,11 +42,11 @@ final class ToDoStorage {
     
     var tags: [Tag]
     
-    init(title: String, tags: [Tag] = [], notes: String = "") {
+    init(title: String, tags: [Tag] = [], notes: String = "", completed: Bool = false) {
         self.title = title
         self.notes = notes
         self.tags = tags
-        self.completed = false
+        self.completed = completed
         self.dateCreated = Date()
     }
     

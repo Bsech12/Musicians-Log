@@ -40,7 +40,7 @@ struct NewTimer: View {
             Section("tags") {
                 FlowHStack {
                     ForEach(tagTypes) { i in
-                        TagWidget(tag: i, isGrey: tags.contains(i), onTagTapped: onTagTapped)
+                        TagWidget(tag: i, isGrey: true, onTagTapped: onTagTapped)
                     }
                 }
                 .padding()
@@ -63,6 +63,10 @@ struct NewTimer: View {
         
         
         Button {
+            log.title = title
+            log.notes = notes
+            log.tags = tags
+            print(log.tags)
             isPresented = false
             isStarted = true
             log.startTime = Date()
