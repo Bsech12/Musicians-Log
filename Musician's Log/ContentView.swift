@@ -16,7 +16,7 @@ struct ContentView: View {
     var body: some View {
         TabView(selection: $tabSelected) {
             Tab("History", systemImage: "book", value: 0) {
-                History()
+                History(tabSelected: $tabSelected)
             }
             Tab("Today", systemImage: "music.note.house.fill", value: 1) {
                 Today()
@@ -26,6 +26,7 @@ struct ContentView: View {
             }
             
         }
+        .background(Material.thinMaterial)
     }
 }
 

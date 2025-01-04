@@ -31,7 +31,7 @@ struct CalendarDateTile: View {
                             .frame(width: 40)
                     }
                     Text(number == 0 ? "" : String(number))
-                        .foregroundStyle(today ? (selected == number ? .white : .red) : .primary)
+                        .foregroundStyle(today ? (selected == number ? .white : .red) : .white)
                         .frame(maxWidth: .infinity)
                         .bold(calTileStle == .today)
                         .padding()
@@ -48,19 +48,23 @@ struct CalendarDateTile: View {
                                 
                                 colors[i]
                                     .clipShape(Circle())
+                                    .padding(.top, -5)
                                     .frame(width: 9, height: 9)
                             }
                         }
                     }
                     if colors.count > 4 {
                         Text(" ...")
+                            .foregroundStyle(.white)
+                            .padding(.top, -12)
+                            .frame(height: 0)
                     }
 
 
                 }
 
             }
-            .border(Color.primary, width: CGFloat(borderWidth))
+            .border(.bar, width: CGFloat(borderWidth))
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }

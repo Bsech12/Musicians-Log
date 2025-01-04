@@ -21,61 +21,64 @@ struct NewTimer: View {
     @Query(sort: \Tag.name) var tagTypes: [Tag]
     
     var body: some View {
-        HStack {
-
-            Spacer()
-            Button("Cancel") {
-                isPresented = false
-            }
-            .padding()
-        }
-        Text("New Timer")
-            .font(.headline)
-            .foregroundStyle(.primary)
-
-        Form {
-            Section("Title") {
-                TextField("Title", text: $title)
-            }
-            Section("tags") {
-                FlowHStack {
-                    ForEach(tagTypes) { i in
-                        TagWidget(tag: i, isGrey: true, onTagTapped: onTagTapped)
-                    }
+        VStack {
+            HStack {
+                
+                Spacer()
+                Button("Cancel") {
+                    isPresented = false
                 }
                 .padding()
             }
-
-            Section("Notes") {
-                TextField("Notes", text: $notes, axis: .vertical)
-                    .lineLimit(5...10)
+            Text("New Timer")
+                .font(.headline)
+                .foregroundStyle(.primary)
+            
+            Form {
+                Section("Title") {
+                    TextField("Title", text: $title)
+                }
+                Section("tags") {
+                    FlowHStack {
+                        ForEach(tagTypes) { i in
+                            TagWidget(tag: i, isGrey: true, onTagTapped: onTagTapped)
+                        }
+                    }
+                    .padding()
+                }
+                
+                Section("Notes") {
+                    TextField("Notes", text: $notes, axis: .vertical)
+                        .lineLimit(5...10)
+                }
+                
+            }
+            .onAppear {
+                title = log.title
+                tags = log.tags
+                notes = log.notes
             }
             
+            
+            
+            
+            
+            Button {
+                log.title = title
+                log.notes = notes
+                log.tags = tags
+                print(log.tags)
+                isPresented = false
+                isStarted = true
+                log.startTime = Date()
+            } label: {
+                Text("Start!!")
+                    .frame(maxWidth: .infinity, maxHeight: 30)
+            }
+            .padding()
+            .buttonStyle(.borderedProminent)
         }
-        .onAppear {
-            title = log.title
-            tags = log.tags
-            notes = log.notes
-        }
- 
-        
-        
-        
-        
-        Button {
-            log.title = title
-            log.notes = notes
-            log.tags = tags
-            print(log.tags)
-            isPresented = false
-            isStarted = true
-            log.startTime = Date()
-        } label: {
-            Text("Start!!")
-                .frame(maxWidth: .infinity, maxHeight: 30)
-        }
-        .padding()
-        .buttonStyle(.borderedProminent)
+        .background(Color.listGrey)
     }
     func onTagTapped(tag: Tag) {
     

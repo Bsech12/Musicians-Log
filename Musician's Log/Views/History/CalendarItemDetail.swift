@@ -94,7 +94,7 @@ struct CalendarItemDetail: View {
                     }
                     Section("Completed Tasks") {
                         ForEach(calendarItem.todosCompleted, id: \.self) { todo in
-                            TodoItem(name: todo.title, checked: todo.completed)
+                            TodoItem(item: todo)
                         }
                         
                         if(calendarItem.todosCompleted.isEmpty) {
@@ -154,7 +154,7 @@ struct CalendarItemDetail: View {
                     }
                     Section("Completed Tasks") { //TODO: not done yet
                         ForEach(calendarItem.todosCompleted, id: \.self) { todo in
-                            TodoItem(name: todo.title, checked: todo.completed)
+                            TodoItem(item: todo)
                         }
                         
                         if(calendarItem.todosCompleted.isEmpty) {
@@ -199,6 +199,7 @@ struct CalendarItemDetail: View {
                 updateEditableInfo()
             }
         }
+        .background(Color.listGrey)
 
     }
     

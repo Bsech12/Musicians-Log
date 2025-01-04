@@ -20,11 +20,18 @@ final class MusicLogStorage {
     
     var todosCompleted: [ToDoStorage]
     
+    func getColors() -> [Color] {
+        var colors: [Color] = []
+        for tag in tags {
+            colors.append(tag.getColor())
+        }
+        return colors
+    }
     
-    init(title: String, tags: [Tag] = [], notes: String = "") {
-        self.startTime = Date()
+    init(title: String, startTime: Date = Date(), endTime: Date? = nil, tags: [Tag] = [], notes: String = "", todosCompleted: [ToDoStorage] = []) {
+        self.startTime = startTime
         self.tags = tags
-        self.endTime = nil
+        self.endTime = endTime
         self.title = title
         self.notes = notes
         self.todosCompleted = []
@@ -35,6 +42,9 @@ final class MusicLogStorage {
 final class ToDoStorage {
     var title: String
     var notes: String
+    var importance: Importance
+    var dueDate: Date?
+    var reminderDate: Date?
     var completed: Bool
     
     var dateCreated: Date
@@ -42,12 +52,15 @@ final class ToDoStorage {
     
     var tags: [Tag]
     
-    init(title: String, tags: [Tag] = [], notes: String = "", completed: Bool = false) {
+    init(title: String, tags: [Tag] = [], notes: String = "", importance: Importance = .low, completed: Bool = false, dueDate: Date? = nil, reminderDate: Date? = nil) {
         self.title = title
         self.notes = notes
+        self.importance = importance
         self.tags = tags
         self.completed = completed
         self.dateCreated = Date()
+        self.reminderDate = reminderDate
+        self.dueDate = dueDate
     }
     
 }

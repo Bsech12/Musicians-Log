@@ -6,12 +6,13 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct Todo: View {
     
-    @State var isAnimating = false
+    @Query(sort: \ToDoStorage.dateCreated) var toDos: [ToDoStorage]
     
-    
+    @State var newIsPresented: Bool = false
     
     var body: some View {
         
@@ -22,51 +23,44 @@ struct Todo: View {
                     .edgesIgnoringSafeArea(.all)
                 MeshGradient(width: 3, height: 3, points: [
                     [0.0, 0.0], [0.5, 0.0], [1.0, 0.0],
-                    [0.0, 0.5], [isAnimating ? 0.1 : 0.8, 0.5], [1.0, isAnimating ? 0.5 : 1],
+                    [0.0, 0.5], [0.8, 0.5], [1.0, 1],
                     [0.0, 0.8], [0.5, 0.8], [0.8, 0.8]
                 ], colors: [
-                    .red, isAnimating ? .blue : .red, .blue,
-                    isAnimating ? .listGrey : .blue, .red, .listGrey,
+                    .red, .red, .blue,
+                     .blue, .red, .listGrey,
                     .listGrey, .listGrey, .listGrey
                 ])
                 .edgesIgnoringSafeArea(.all)
-                .onAppear() {
-                    withAnimation(.easeInOut(duration: 12.0).repeatForever(autoreverses: true)) {
-                        isAnimating.toggle()
-                    }
-                }
                 
                 List {
-                    Section("Today") {
-                        TodoItem(name: "Practice piano", checked: false)
-                        TodoItem(name: "Practice cello", checked: false)
-                        
+                    ForEach(toDos){ todo in
+                        TodoItem(item: todo)
                     }
-                    Section("Tomorrow") {
-                        TodoItem(name: "Practice piano", checked: false)
-                        TodoItem(name: "Practice cello", checked: false)
-                        
-                    }
-                    Section("This Week") {
-                        TodoItem(name: "Practice piano", checked: false)
-                        TodoItem(name: "Practice cello", checked: false)
-                        
-                    }
-                    Section("Next Week") {
-                        TodoItem(name: "Practice piano", checked: false)
-                        TodoItem(name: "Practice cello", checked: false)
-                        
-                    }
-                    Section("This Month") {
-                        TodoItem(name: "Practice piano", checked: false)
-                        TodoItem(name: "Practice cello", checked: false)
-                        
-                    }
-                    Section("This Year") {
-                        TodoItem(name: "Practice piano", checked: false)
-                        TodoItem(name: "Practice cello", checked: false)
-                        
-                    }
+//                    Section("Tomorrow") {
+//                        TodoItem(name: "Practice piano", checked: false)
+//                        TodoItem(name: "Practice cello", checked: false)
+//                        
+//                    }
+//                    Section("This Week") {
+//                        TodoItem(name: "Practice piano", checked: false)
+//                        TodoItem(name: "Practice cello", checked: false)
+//                        
+//                    }
+//                    Section("Next Week") {
+//                        TodoItem(name: "Practice piano", checked: false)
+//                        TodoItem(name: "Practice cello", checked: false)
+//                        
+//                    }
+//                    Section("This Month") {
+//                        TodoItem(name: "Practice piano", checked: false)
+//                        TodoItem(name: "Practice cello", checked: false)
+//                        
+//                    }
+//                    Section("This Year") {
+//                        TodoItem(name: "Practice piano", checked: false)
+//                        TodoItem(name: "Practice cello", checked: false)
+//                        
+//                    }
                     
                 }
                 .scrollContentBackground(.hidden)
@@ -78,7 +72,7 @@ struct Todo: View {
                     HStack {
                         Spacer()
                         Button {
-                            
+                            newIsPresented = true
                         } label: {
                             Image(systemName: "plus")
                                 .padding()
@@ -92,6 +86,9 @@ struct Todo: View {
 
                 
 
+            }
+            .popover(isPresented: $newIsPresented) {
+                AddTodoPopup(showPopup: $newIsPresented)
             }
             
             

@@ -6,8 +6,12 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct TodoWidget: View {
+    
+    @Query(sort: \ToDoStorage.dateCreated) var toDos: [ToDoStorage]
+    
     var body: some View {
         VStack {
             Text("Todo:")
@@ -15,10 +19,10 @@ struct TodoWidget: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
             VStack {
-                TodoItem(name: "This is something I need to do!", checked: true )
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                TodoItem(name: "asdfasdf", checked: false )
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                ForEach(toDos) { todo in
+                    TodoItem(item: todo)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
             .padding()
         }

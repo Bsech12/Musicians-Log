@@ -18,44 +18,50 @@ struct NewTag: View {
     @Environment(\.modelContext) var modelContext
     
     var body: some View {
-        Text("New Tag")
-            .padding()
-            .font(.headline)
-        Form {
-            Section {
-                TextField("Name", text: $name)
-                
-                TextField("Icon", text: $icon)
-                
-                ColorPicker("Color", selection: $color)
-            }
-            Section {
-                Button(isNew ? "Create Tag" : "Update Tag") {
-                    if isNew {
-                        let newTag = Tag(name: name, icon: icon, color: color)
-                        modelContext.insert(newTag)
-                        try? modelContext.save()
-                        isPresented = false
-                    } else {
-                        if let tag {
-                            tag.name = name
-                            tag.icon = icon
-                            tag.updateColor(color: color)
+        VStack {
+            Text("New Tag")
+                .padding()
+                .font(.headline)
+                .frame(maxWidth: .infinity)
+            
+            Form {
+                Section {
+                    TextField("Name", text: $name)
+                    
+                    TextField("Icon", text: $icon)
+                    
+                    ColorPicker("Color", selection: $color)
+                }
+                Section {
+                    Button(isNew ? "Create Tag" : "Update Tag") {
+                        if isNew {
+                            let newTag = Tag(name: name, icon: icon, color: color)
+                            modelContext.insert(newTag)
+                            try? modelContext.save()
                             isPresented = false
+                        } else {
+                            if let tag {
+                                tag.name = name
+                                tag.icon = icon
+                                tag.updateColor(color: color)
+                                isPresented = false
+                            }
                         }
+                        
                     }
-
+                }
+            }
+            .onAppear() {
+                if let tag {
+                    isNew = false
+                    name = tag.name
+                    icon = tag.icon
+                    color = tag.getColor()
                 }
             }
         }
-        .onAppear() {
-            if let tag {
-                isNew = false
-                name = tag.name
-                icon = tag.icon
-                color = tag.getColor()
-            }
-        }
+        .background(Color.listGrey)
+        
     }
 }
 

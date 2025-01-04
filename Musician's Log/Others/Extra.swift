@@ -92,15 +92,20 @@ extension View {
         up: @escaping (() -> Void) = {},
         down: @escaping (() -> Void) = {},
         left: @escaping (() -> Void) = {},
-        right: @escaping (() -> Void) = {}
+        right: @escaping (() -> Void) = {},
+        valueChanged: @escaping ((DragGesture.Value) -> Void) = {_ in }
     ) -> some View {
-        return self.gesture(DragGesture(minimumDistance: 0, coordinateSpace: .local)
+        return self.gesture(DragGesture(minimumDistance: 0, coordinateSpace: .global)
             .onEnded({ value in
                 if value.translation.width < 0 { left() }
                 if value.translation.width > 0 { right() }
                 if value.translation.height < 0 { up() }
                 if value.translation.height > 0 { down() }
-            }))
+            })
+            .onChanged({ value in
+                valueChanged(value)
+            })
+        )
     }
 }
 

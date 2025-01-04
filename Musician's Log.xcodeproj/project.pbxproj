@@ -10,22 +10,9 @@
 		0A6C178E2CE534A9003FC7FF /* Musician's Log.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Musician's Log.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		0A877DE12D1E299300D81540 /* Exceptions for "Musician's Log" folder in "Musician's Log" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"Musician-s-Log-Info.plist",
-			);
-			target = 0A6C178D2CE534A9003FC7FF /* Musician's Log */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		0A6C17902CE534A9003FC7FF /* Musician's Log */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				0A877DE12D1E299300D81540 /* Exceptions for "Musician's Log" folder in "Musician's Log" target */,
-			);
 			path = "Musician's Log";
 			sourceTree = "<group>";
 		};

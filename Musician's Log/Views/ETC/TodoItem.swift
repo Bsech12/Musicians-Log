@@ -8,12 +8,11 @@
 import SwiftUI
 
 struct TodoItem: View {
-    @State var name: String
-    @State var checked: Bool
+    @Bindable var item: ToDoStorage
     
     var body: some View {
         HStack {
-            if checked {
+            if item.completed {
                 Image(systemName: "checkmark.circle.fill")
                     .imageScale(.large)
                     .foregroundColor(.accentColor)
@@ -24,7 +23,7 @@ struct TodoItem: View {
                     .foregroundColor(.accentColor)
                 
             }
-            Text(name)
+            Text(item.title)
             
         }
     }
@@ -32,8 +31,8 @@ struct TodoItem: View {
 
 #Preview {
     List {
-        TodoItem(name: "This is something I need to do!", checked: true )
-        TodoItem(name: "This is something I need to do!", checked: false )
+        TodoItem(item: ToDoStorage(title: "This is something I need to do!"))
+        TodoItem(item: ToDoStorage(title: "This is something I need to do!"))
     }
     
 }

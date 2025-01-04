@@ -10,6 +10,8 @@ import SwiftData
 
 struct History: View {
     
+    @Binding var tabSelected: Int
+    
     @State var dateFocused = Date()
     @State var isThisMonth: CalTileStyle = .today
     @State var selected: Int = Date().dayInt
@@ -19,14 +21,19 @@ struct History: View {
     
     @Query(sort: \MusicLogStorage.startTime) var logs: [MusicLogStorage]
     
-    @State var fullScreen: Bool = false
+    @State var fullscreen: PresentationDetent = .fraction(0.37)
+    @State var isPresented: Bool = true
     
     @State var newPresented: Bool = false
+    @State var newItem: MusicLogStorage? = nil
+    
+    @State var navigationPresented: Bool = false
+    @State var navigationPresentedItem: MusicLogStorage? = nil
     
     let calendar = Calendar.current
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 
                 Color.listGrey
@@ -41,100 +48,119 @@ struct History: View {
                     .listGrey, .listGrey, .listGrey
                 ])
                 .edgesIgnoringSafeArea(.all)
-                
-                VStack {
-                    VStack {
-                        LazyVGrid(columns: [GridItem(spacing: 0), GridItem(spacing: 0), GridItem(spacing: 0), GridItem(spacing: 0), GridItem(spacing: 0), GridItem(spacing: 0), GridItem(spacing: 0)], spacing: 0) {
-                            if !fullScreen {
-                                if(dateFocused.firstDayOfTheMonth.weekday != 1) {
-                                    ForEach(1...(dateFocused.firstDayOfTheMonth.weekday - 1), id: \.self) { i in
-                                        CalendarDateTile(number: 0, borderWidth: 0, calTileStle: .constant(.grey), selected: $selected, colors: .constant([]))
-                                    }
-                                }
-                                
-                                ForEach(1...calendar.range(of: .day, in: .month, for: dateFocused)!.count, id: \.self) { i in
-                                    
-                                    CalendarDateTile(number: i, borderWidth: 1, calTileStle: $isThisMonth, selected: $selected, colors: .constant(colorsForDay(i)))
-                                }
-                                
-                            } else {
-                                
-                                ForEach(weeksWorthOfDays, id: \.self) { i in
-                                    
-                                    CalendarDateTile(number: i, borderWidth: 1, calTileStle: $isThisMonth, selected: $selected, colors: .constant(colorsForDay(i)))
-                                }
-                            }
-                        }
-                        .swipe(left: {
-                            moveRight()
-                        }, right: {
-                            moveLeft()
-                        })
-                        
-                    }
-                    
-                    
-                    
+                GeometryReader { geo in
                     VStack {
                         VStack {
-                            RoundedRectangle(cornerRadius: 10)
-                                .fill(.secondary)
-                                .frame(width: 40, height: 5)
-                                .padding(4)
-                            
-                            Text(fullScreen ? "" : selectedDateText)
-                                .font(.headline)
-                                .frame(maxWidth: .infinity)
-                                .onChange(of: selected, initial: true) {
-                                    updateDate()
-                                }
-                                .onChange(of: dateFocused, initial: true) {
-                                    selectedDateText = dateFocused.formatted(date: .abbreviated, time: .omitted)
-                                    updateWeek()
-                                }
-                        }
-                        .frame(maxWidth: .infinity)
-
-                        ScrollView {
-                            
-                            
-                            ForEach(logs) { i in
-                                NavigationLink(destination:  CalendarItemDetail(isNew: .constant(false), calendarItem: i)) {
-                                    if(i.startTime.basicallyTheSameAs(dateFocused)) {
-                                        CalendarHistoryItem(color: .red, name: i.title, time1: i.startTime.formatted(date: .omitted, time: .standard), time2: i.endTime?.formatted(date: .omitted, time: .standard) ?? "xx:xx")
+                            LazyVGrid(columns: [GridItem(spacing: 0), GridItem(spacing: 0), GridItem(spacing: 0), GridItem(spacing: 0), GridItem(spacing: 0), GridItem(spacing: 0), GridItem(spacing: 0)], spacing: 0) {
+                                if !fullscreen.isLarge() {
+                                    if(dateFocused.firstDayOfTheMonth.weekday != 1) {
+                                        ForEach(1...(dateFocused.firstDayOfTheMonth.weekday - 1), id: \.self) { i in
+                                            CalendarDateTile(number: 0, borderWidth: 0, calTileStle: .constant(.grey), selected: $selected, colors: .constant([]))
+                                        }
                                     }
                                     
+                                    ForEach(1...calendar.range(of: .day, in: .month, for: dateFocused)!.count, id: \.self) { i in
+                                        
+                                        CalendarDateTile(number: i, borderWidth: 1, calTileStle: $isThisMonth, selected: $selected, colors: .constant(colorsForDay(i)))
+                                    }
+                                    
+                                } else {
+                                    
+                                    ForEach(weeksWorthOfDays, id: \.self) { i in
+                                        
+                                        CalendarDateTile(number: i, borderWidth: 1, calTileStle: $isThisMonth, selected: $selected, colors: .constant(colorsForDay(i)))
+                                    }
                                 }
-                                
                             }
+                            .swipe(left: {
+                                moveRight()
+                            }, right: {
+                                moveLeft()
+                            })
+                            
                         }
-                        .scrollDisabled(!fullScreen) //TODO: Test later...
+                        
+                        Spacer()
+                        
                         
                     }
-                    .swipe(up: {
-                        withAnimation {
-                            fullScreen = true
+                    .sheet(isPresented: $isPresented) {
+                        VStack {
+                            VStack {
+                                HStack {
+                                    Text(fullscreen.isLarge() ? "" : selectedDateText)
+                                        .font(.headline)
+                                    
+                                        .onChange(of: selected, initial: true) {
+                                            updateDate()
+                                        }
+                                        .onChange(of: dateFocused, initial: true) {
+                                            selectedDateText = dateFocused.formatted(date: .abbreviated, time: .omitted)
+                                            updateWeek()
+                                        }
+                                    if !fullscreen.isLarge() {
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .fill(.secondary)
+                                            .frame(width: 3, height: 10)
+                                            .padding(4)
+                                    }
+                                    Text("Total Hours for day: \(totalHoursForToday())")
+                                }
+                                .padding()
+                            }
+                            .frame(maxWidth: .infinity)
+                            
+                            ScrollView {
+                                //                                NavigationLink("hi", destination: Text("hi"))
+                                
+                                
+                                ForEach(logs) { i in
+                                    Button() {
+                                        navigationPresentedItem = i
+                                        isPresented = false
+                                        navigationPresented = true
+                                        print("set the values?")
+                                        print(navigationPresentedItem!.title)
+                                    } label: {
+                                        if(i.startTime.basicallyTheSameAs(dateFocused)) {
+                                            CalendarHistoryItem(colors: i.getColors(), name: i.title, time1: i.startTime.formatted(date: .omitted, time: .standard), time2: i.endTime?.formatted(date: .omitted, time: .standard) ?? "--:--")
+                                                .padding([.leading,.trailing], 5)
+                                        }
+                                        
+                                    }
+                                                                        .buttonStyle(PlainButtonStyle())
+                                    
+                                }
+                            }
+                            .scrollBounceBehavior(.basedOnSize)
+                            
                         }
-                    }, down: {
-                        withAnimation {
-                            fullScreen = false
-                        }
-                    })
-                    .background(RoundedRectangle(cornerRadius: 10).fill(Material.bar))
+                        .interactiveDismissDisabled()
+                        .presentationBackgroundInteraction(.enabled)
+                        .presentationBackground(.thinMaterial)
+                        .presentationDetents([.height(geo.size.height - 360), .newLarge(height: geo.size.height - 80)], selection: $fullscreen ) //.fraction(0.3), .fraction(0.7),
+                        .bottomMaskForSheet()
+                        
+                    }
                 }
                 
+            }
+            .navigationDestination(isPresented: $navigationPresented) {
+                if navigationPresentedItem != nil{
+                    CalendarItemDetail(isNew: .constant(false), calendarItem: navigationPresentedItem ?? MusicLogStorage(title: "New Broken Thing", startTime: dateFocused))
+                        .onDisappear {
+                            isPresented = true
+                        }
+                }
                 
-                
-                
-                
-                
-                
-                
+            }
+            .onChange(of: tabSelected) {
+                isPresented = (tabSelected == 0)
             }
             .safeAreaInset(edge:.top) {
                 VStack {
                     Group {
-                        if fullScreen {
+                        if fullscreen.isLarge() {
                             Text(selectedDateText).bold()
                         } else {
                             Text(dateFocused.monthString).bold() + Text(" " + dateFocused.yearString)
@@ -190,6 +216,7 @@ struct History: View {
                 ToolbarItem {
                     Button {
                         newPresented = true
+                        newItem = MusicLogStorage(title: "New Thing", startTime: dateFocused)
                         
                     } label: {
                         Image(systemName: "plus")
@@ -197,9 +224,12 @@ struct History: View {
                 }
             }
             .popover(isPresented: $newPresented) {
-                CalendarItemDetail(isNew: $newPresented, calendarItem: MusicLogStorage(title: "New Thing"))
+                CalendarItemDetail(isNew: $newPresented, calendarItem: newItem ?? MusicLogStorage(title: "New Thing", startTime: dateFocused))
+                    .onDisappear() {
+                        isPresented = true
+                    }
             }
-            
+
             
             
         }
@@ -210,7 +240,7 @@ struct History: View {
 
 
         if selected != dateFocused.dayInt {
-            if fullScreen {
+            if fullscreen.isLarge() {
                 updateWeek()
                 let interval = Double(weeksWorthOfDays.firstIndex(of: selected)! - weeksWorthOfDays.firstIndex(of: dateFocused.dayInt)!)
                 
@@ -232,7 +262,7 @@ struct History: View {
         
     }
     func moveLeft() {
-        let dateComponents = DateComponents(year: dateFocused.yearInt, month: (fullScreen ? dateFocused.monthInt : dateFocused.monthInt - 1), day: fullScreen ? dateFocused.dayInt - 7 : 1)
+        let dateComponents = DateComponents(year: dateFocused.yearInt, month: (fullscreen.isLarge() ? dateFocused.monthInt : dateFocused.monthInt - 1), day: fullscreen.isLarge() ? dateFocused.dayInt - 7 : 1)
         withAnimation {
             dateFocused = calendar.date(from: dateComponents)!
             if(Date().yearString == dateFocused.yearString && Date().monthString == dateFocused.monthString) {
@@ -240,11 +270,11 @@ struct History: View {
             } else {
                 isThisMonth = .normal
             }
-            selected = fullScreen ? dateFocused.firstDayOfTheWeek.dayInt : dateFocused.dayInt
+            selected = fullscreen.isLarge() ? dateFocused.firstDayOfTheWeek.dayInt : dateFocused.dayInt
         }
     }
     func moveRight() {
-        let dateComponents = DateComponents(year: dateFocused.yearInt, month: (fullScreen ? dateFocused.monthInt : dateFocused.monthInt + 1), day: fullScreen ? dateFocused.dayInt + 7 : 1)
+        let dateComponents = DateComponents(year: dateFocused.yearInt, month: (fullscreen.isLarge() ? dateFocused.monthInt : dateFocused.monthInt + 1), day: fullscreen.isLarge() ? dateFocused.dayInt + 7 : 1)
         withAnimation {
             dateFocused = calendar.date(from: dateComponents)!
             if(Date().yearString == dateFocused.yearString && Date().monthString == dateFocused.monthString) {
@@ -252,23 +282,37 @@ struct History: View {
             } else {
                 isThisMonth = .normal
             }
-            selected = fullScreen ? dateFocused.firstDayOfTheWeek.dayInt : dateFocused.dayInt
+            selected = fullscreen.isLarge() ? dateFocused.firstDayOfTheWeek.dayInt : dateFocused.dayInt
         }
+    }
+    func totalHoursForToday() -> Int {
+        var hours: Int = 0
+        
+        for log in logs where log.startTime.dayInt == dateFocused.dayInt && log.startTime.monthInt == dateFocused.monthInt && log.startTime.yearInt == dateFocused.yearInt{
+            if let endTime = log.endTime {
+                hours += (log.startTime.differenceBetween(dateToUse: endTime).hour ?? 0)
+            }
+            
+        }
+        return hours
     }
     func colorsForDay(_ day: Int) -> [Color] {
         var colors: [Color] = []
-        
+        var wasFound: Bool = false
         for log in logs where log.startTime.dayInt == day && log.startTime.monthInt == dateFocused.monthInt && log.startTime.yearInt == dateFocused.yearInt{
+            wasFound = true
             for tag in log.tags {
                 if colors.contains(tag.getColor()) { continue }
                 colors.append(tag.getColor())
             }
         }
+        if colors.isEmpty && wasFound { colors.append(Color.gray) }
         
         return colors
     }
 }
 
 #Preview {
-    History()
+    @Previewable @State var tabSelected: Int = 0
+    ContentView(tabSelected: tabSelected)
 }
