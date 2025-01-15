@@ -32,6 +32,7 @@ struct CalendarItemDetail: View {
     @State var tags: [Tag] = []
     @State var notes: String = ""
 
+    @State var confirmationShown = false
     
     var body: some View {
         VStack {
@@ -120,8 +121,8 @@ struct CalendarItemDetail: View {
                             modelContext.insert(calendarItem)
                             try? modelContext.save()
                             isNew = false
-                        } else { //delete
-                            //are you sure?
+                        } else {
+                            confirmationShown = true
                         }
                         
                     }
@@ -167,6 +168,16 @@ struct CalendarItemDetail: View {
                     }
                     
                 }
+            }
+            .alert("Are you sure you want to delete?", isPresented: $confirmationShown) {
+                Button("Delete", role: .destructive) {
+                    modelContext.delete(calendarItem)
+                }
+                Button("Cancel", role: .cancel) {
+                    confirmationShown = false
+                }
+            } message: {
+                Text("This cannot be undone")
             }
             .toolbar {
                 if(isEditing) {

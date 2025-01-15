@@ -14,7 +14,6 @@ struct CalendarDateTile: View {
     @Binding var selected: Int
     @Binding var colors: [Color]
     
-    //TODO: add when was practiced!!
     
     var body: some View {
         let today = (calTileStle == .today && number == Date().dayInt)

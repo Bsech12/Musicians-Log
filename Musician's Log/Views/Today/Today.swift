@@ -6,8 +6,13 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct Today: View {
+    
+    @Query(sort: \ToDoStorage.dateCreated) var toDos: [ToDoStorage]
+    
+    @State var newToDoPresented: Bool = false
     
     var body: some View {
         NavigationView {
@@ -31,14 +36,25 @@ struct Today: View {
                         }
                     }
                 }
-                Button {
-                    
-                } label: {
-                    TodoWidget()
-                    
+                Section("Todos") {
+                    ForEach(toDos){ todo in
+                        TodoItem(item: todo)
+                    }
+                    Button() {
+                        newToDoPresented = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "plus")
+                            Text("New ToDo")
+                        }
+                    }
+
                 }
                 
                 
+            }
+            .popover(isPresented: $newToDoPresented) {
+                AddTodoPopup(showPopup: $newToDoPresented)
             }
             .scrollContentBackground(.hidden)
             .toolbar {
@@ -83,15 +99,6 @@ struct Today: View {
     }
 }
 
-extension Animation {
-    func `repeat`(while expression: Bool, autoreverses: Bool = true) -> Animation {
-        if expression {
-            return self.repeatForever(autoreverses: autoreverses)
-        } else {
-            return self
-        }
-    }
-}
 #Preview {
     Today()
 }

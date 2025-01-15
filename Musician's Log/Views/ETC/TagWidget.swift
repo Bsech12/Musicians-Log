@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TagWidget: View {
     @State var tag: Tag
+    @State var smaller: Bool = false
     @State var isGrey: Bool = false
     @State var onTagTapped: ((Tag) -> Void)?
     @State var doesToggle: Bool = true
@@ -19,11 +20,14 @@ struct TagWidget: View {
                 if tag.icon != "" {
                     if tag.iconType == .systemName {
                         Image(systemName: tag.icon)
+                            .frame(maxHeight: 20)
                     } else {
                         Text(tag.icon)
+                            .font(smaller ? .caption : .title3)
                     }
                 }
                 Text(tag.name)
+                    .font(smaller ? .caption : .title3)
             }
             .foregroundStyle(isGrey ? .gray : tag.getColor())
             .padding(10)
@@ -46,5 +50,6 @@ struct TagWidget: View {
     TagWidget(tag: Tag(name: "Violin", icon: "🎻", color: .blue, iconType: .emoji), isGrey: true) { a in
         return
     }
-
+    .padding()
+    TagWidget(tag: Tag(name: "Violin", icon: "plus", color: .blue, iconType: .systemName), isGrey: true)
 }

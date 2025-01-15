@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct AddTodoPopup: View {
     
+    @Query(sort: \Tag.name) var tagTypes: [Tag]
     @Environment(\.modelContext) var modelContext
     
     @Binding var showPopup: Bool
@@ -18,6 +20,8 @@ struct AddTodoPopup: View {
     
     @State var date: Date = Date()
     @State var importance: Importance = .none
+    
+    @State var tags: [Tag] = []
     
     var body: some View {
         VStack {
@@ -50,9 +54,17 @@ struct AddTodoPopup: View {
                 Section {
                     DatePicker("Due Date", selection: $date)
                 }
+                Section("Tags") {
+                    FlowHStack {
+                        ForEach(tagTypes) { i in
+                            TagWidget(tag: i, isGrey: !tags.contains(i), onTagTapped: onTagTapped)
+                        }
+                    }
+                    .padding()
+                }
             }
             Button() {
-                var newTodo: ToDoStorage = ToDoStorage(title: name, importance: importance, dueDate: date)
+                var newTodo: ToDoStorage = ToDoStorage(title: name, tags: tags, importance: importance, dueDate: date)
                 modelContext.insert(newTodo)
                 try? modelContext.save()
                 showPopup = false
@@ -61,12 +73,24 @@ struct AddTodoPopup: View {
                     Image(systemName: "plus")
                     Text("Add")
                 }
+                .frame(maxWidth: .infinity, maxHeight: 30)
 
             }
+            .padding()
             .buttonStyle(.borderedProminent)
 
         }
         .background(Color.listGrey)
+    }
+    func onTagTapped(tag: Tag) {
+    
+        if tags.contains(tag) {
+                tags.remove(at: tags.firstIndex(of: tag)!)
+            
+        } else {
+            tags.append(tag)
+        }
+        
     }
 }
 

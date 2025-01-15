@@ -45,7 +45,13 @@ final class ToDoStorage {
     var importance: Importance
     var dueDate: Date?
     var reminderDate: Date?
-    var completed: Bool
+    var completed: Bool {
+        didSet {
+            print("worked?")
+            self.dateCompleted = Date()
+            print(self)
+        }
+    }
     
     var dateCreated: Date
     var dateCompleted: Date?
