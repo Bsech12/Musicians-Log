@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		0A2CD5582D38C494006E41E9 /* SwiftTuner in Frameworks */ = {isa = PBXBuildFile; productRef = 0A2CD5572D38C494006E41E9 /* SwiftTuner */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		0A6C178E2CE534A9003FC7FF /* Musician's Log.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Musician's Log.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A2CD5582D38C494006E41E9 /* SwiftTuner in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +70,7 @@
 			);
 			name = "Musician's Log";
 			packageProductDependencies = (
+				0A2CD5572D38C494006E41E9 /* SwiftTuner */,
 			);
 			productName = "Musician's Log";
 			productReference = 0A6C178E2CE534A9003FC7FF /* Musician's Log.app */;
@@ -94,6 +100,9 @@
 			);
 			mainGroup = 0A6C17852CE534A8003FC7FF;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				0A2CD5562D38C494006E41E9 /* XCRemoteSwiftPackageReference "SwiftTuner" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 0A6C178F2CE534A9003FC7FF /* Products */;
 			projectDirPath = "";
@@ -257,6 +266,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Musician-s-Log-Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "To use the tuner, we need microphone permission!!";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -287,6 +297,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Musician-s-Log-Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "To use the tuner, we need microphone permission!!";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -326,6 +337,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		0A2CD5562D38C494006E41E9 /* XCRemoteSwiftPackageReference "SwiftTuner" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Matt54/SwiftTuner.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		0A2CD5572D38C494006E41E9 /* SwiftTuner */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0A2CD5562D38C494006E41E9 /* XCRemoteSwiftPackageReference "SwiftTuner" */;
+			productName = SwiftTuner;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 0A6C17862CE534A9003FC7FF /* Project object */;
 }

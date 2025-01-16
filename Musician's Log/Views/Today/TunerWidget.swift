@@ -6,17 +6,12 @@
 //
 
 import SwiftUI
+import SwiftTuner
 
 struct TunerWidget: View {
+    @Environment(TunerConductor.self) var conductor: TunerConductor
     var body: some View {
-        VStack {
-            Image(systemName: "tuningfork")
-                .resizable()
-                .frame(width: 50, height: 50)
-            Text("\nTuner")
-                .font(.title2)
-                .frame(maxWidth: .infinity, alignment: .center)
-        }
+        TunerRootView(tuner: conductor)
         .padding()
         .frame(
             maxWidth: .infinity,
@@ -32,6 +27,7 @@ struct TunerWidget: View {
         //As an example
     } label: {
         TunerWidget()
+            .environment(TunerConductor(isMockingInput: true))
             
     }
     .buttonBorderShape(.roundedRectangle)

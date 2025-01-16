@@ -7,10 +7,14 @@
 
 import SwiftUI
 import SwiftData
+import AVFAudio
+import SwiftTuner
 
 struct Today: View {
     
     @Query(sort: \ToDoStorage.dateCreated) var toDos: [ToDoStorage]
+    
+    @State var conductor: TunerConductor = TunerConductor()
     
     @State var newToDoPresented: Bool = false
     
@@ -23,16 +27,17 @@ struct Today: View {
                 }
                 Section("Tools") {
                     HStack {
-                        Button {
-                            
-                        } label: {
-                            MetronomeWidget()
-                        }
+//                        Button {
+//                            
+//                        } label: {
+//                            MetronomeWidget()
+//                        }
                         
                         Button {
                             
                         } label: {
                             TunerWidget()
+                                .environment(conductor)
                         }
                     }
                 }
@@ -61,6 +66,7 @@ struct Today: View {
                 ToolbarItem {
                     NavigationLink {
                         Settings()
+                            .environment(conductor)
                     } label: {
                         Image(systemName: "gear")
                             .resizable()
@@ -85,8 +91,16 @@ struct Today: View {
             .navigationTitle("Today")
             
         }
-
         .onAppear {
+            Task {
+                if await AVAudioApplication.requestRecordPermission() {
+                    // The user grants access. Present recording interface.
+                } else {
+                    // The user denies access. Present a message that indicates
+                    // that they can change their permission settings in the
+                    // Privacy & Security section of the Settings app.
+                }
+            }
             let appearance = UINavigationBarAppearance()
             appearance.backgroundEffect = UIBlurEffect(style: .systemUltraThinMaterial)
             UINavigationBar.appearance().standardAppearance = appearance

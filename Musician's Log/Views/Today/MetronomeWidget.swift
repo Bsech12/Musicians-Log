@@ -6,17 +6,11 @@
 //
 
 import SwiftUI
+import SwiftTuner
 
 struct MetronomeWidget: View {
     var body: some View {
-        VStack {
-            Image(systemName: "metronome")
-                .resizable()
-                .frame(width: 50, height: 50)
-            Text("\nMetronome")
-                .font(.title2)
-                .frame(maxWidth: .infinity, alignment: .center)
-        }
+        TunerRootView(tuner: TunerConductor())
         .padding()
         .frame(
             maxWidth: .infinity,
