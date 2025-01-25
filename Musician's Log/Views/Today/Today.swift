@@ -17,6 +17,8 @@ struct Today: View {
     @State var conductor: TunerConductor = TunerConductor()
     
     @State var newToDoPresented: Bool = false
+    @State var hasRecordPermission: Bool = false
+    @AppStorage("hasAskedBefore") var hasAskedBefore: Bool = false
     
     var body: some View {
         NavigationView {
@@ -26,20 +28,10 @@ struct Today: View {
                     RecordWidget()
                 }
                 Section("Tools") {
-                    HStack {
-//                        Button {
-//                            
-//                        } label: {
-//                            MetronomeWidget()
-//                        }
+                        MetronomeWidget()
                         
-                        Button {
-                            
-                        } label: {
-                            TunerWidget()
-                                .environment(conductor)
-                        }
-                    }
+                        TunerWidget(hasPermission: hasRecordPermission)
+                            .environment(conductor)
                 }
                 Section("Todos") {
                     ForEach(toDos){ todo in
@@ -92,15 +84,29 @@ struct Today: View {
             
         }
         .onAppear {
-            Task {
-                if await AVAudioApplication.requestRecordPermission() {
-                    // The user grants access. Present recording interface.
-                } else {
-                    // The user denies access. Present a message that indicates
-                    // that they can change their permission settings in the
-                    // Privacy & Security section of the Settings app.
-                }
+            switch AVAudioApplication.shared.recordPermission {
+                case .granted:
+                    hasRecordPermission = true
+                case .denied:
+                    hasRecordPermission = false
+                case .undetermined:
+           Task {
+                    if await AVAudioApplication.requestRecordPermission() {
+                        // The user grants access. Present recording interface.
+                        hasRecordPermission = true
+
+                    } else {
+                        // The user denies access. Present a message that indicates
+                        // that they can change their permission settings in the
+                        // Privacy & Security section of the Settings app.
+                        hasRecordPermission = false
+                    }
+                    hasAskedBefore = true
             }
+            @unknown default:
+                    print("Unknown case")
+                }
+            
             let appearance = UINavigationBarAppearance()
             appearance.backgroundEffect = UIBlurEffect(style: .systemUltraThinMaterial)
             UINavigationBar.appearance().standardAppearance = appearance

@@ -10,14 +10,32 @@ import SwiftTuner
 
 struct TunerWidget: View {
     @Environment(TunerConductor.self) var conductor: TunerConductor
-    var body: some View {
-        TunerRootView(tuner: conductor)
-        .padding()
-        .frame(
-            maxWidth: .infinity,
-            maxHeight: .infinity
+    @State var hasPermission: Bool
 
-        )
+    var body: some View {
+        ZStack {
+            TunerRootView(tuner: conductor)
+                .padding()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .tint(hasPermission ? Color.blue: Color.secondary)
+                .grayscale(hasPermission ? 0 : 1)
+            
+            if !hasPermission {
+                Button
+                {
+                    UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
+                } label: {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(Color.secondary)
+                            .padding()
+                            .opacity(0.8)
+                        Text("To use the tuner, please allow access to your microphone.")
+                            .font(.title)
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -26,7 +44,7 @@ struct TunerWidget: View {
         //As an example
         //As an example
     } label: {
-        TunerWidget()
+        TunerWidget(hasPermission: false)
             .environment(TunerConductor(isMockingInput: true))
             
     }

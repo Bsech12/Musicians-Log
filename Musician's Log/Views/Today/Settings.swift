@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftData
 import SwiftTuner
+import AVFAudio
 
 struct Settings: View {
     
@@ -53,15 +54,16 @@ struct Settings: View {
                     }
                     .buttonStyle(.plain)
                     .buttonBorderShape(.circle)
-
+                    
                     Picker("Buffer Size", selection: $aConductor.bufferSize) {
                         ForEach(BufferSize.allCases, id: \.id) { bufferSize in
                             Text("\(bufferSize.rawValue)").tag(bufferSize)
                         }
                     }
+                    
                 }
                 
-                VStack {
+                VStack { 
                     HStack {
                         Button {
                             showingAmplitudeThresholdInfo = true
@@ -77,6 +79,10 @@ struct Settings: View {
                     
                     Slider(value: $aConductor.amplitudeThreshold, in: 0.01...0.1)
                 }
+                Button("Allow Microphone (Settings)") {
+                    UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
+                }
+                
             }
             Section() {
                 Text("About me")
