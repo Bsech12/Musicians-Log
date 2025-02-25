@@ -19,6 +19,7 @@ struct Today: View {
     @State var newToDoPresented: Bool = false
     @State var hasRecordPermission: Bool = false
     @AppStorage("hasAskedBefore") var hasAskedBefore: Bool = false
+    @State var isTunerPopoverPresented: Bool = false
     
     var body: some View {
         NavigationView {
@@ -29,9 +30,22 @@ struct Today: View {
                 }
                 Section("Tools") {
                         MetronomeWidget()
-                        
-                        TunerWidget(hasPermission: hasRecordPermission)
+                    ZStack {
+                        VStack {
+                            HStack {
+                                Spacer()
+                                Button {
+                                    isTunerPopoverPresented = true
+                                } label: {
+                                    Image(systemName: "arrow.up.left.and.arrow.down.right")
+                                }
+                                .buttonStyle(.borderedProminent)
+                            }
+                            Spacer()
+                        }
+                       TunerWidget(hasPermission: hasRecordPermission)
                             .environment(conductor)
+                    }
                 }
                 Section("Todos") {
                     ForEach(toDos){ todo in
@@ -82,6 +96,9 @@ struct Today: View {
             }
             .navigationTitle("Today")
             
+        }
+        .popover(isPresented: $isTunerPopoverPresented) {
+            TunerPopover(tuner: $conductor)
         }
         .onAppear {
             switch AVAudioApplication.shared.recordPermission {

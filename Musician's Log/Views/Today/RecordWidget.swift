@@ -20,59 +20,126 @@ struct RecordWidget: View {
     
     let timer = Timer.publish(every: 1, on: .current, in: .common).autoconnect()
     
+    @State var title: String = ""
+    @State var tags: [Tag] = []
+    
+    @Query(sort: \Tag.name) var tagTypes: [Tag]
+    
+    
     var body: some View {
-        Button {
-            if(isRecording) {
-                stopRecording()
-            } else {
-                startRecording()
-            }
-        } label: {
-            HStack {
-                VStack {
-                    Text(isRecording ? "Recording" : "Record")
-                        .font(.title)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    Text("Latest: \(timeSoFar)")
-                        .onReceive(timer) {_ in
-                            if (isRecording) {
-                                let difference = Calendar.current.date(from: currentRecording.startTime.differenceBetween(dateToUse: Date()))
-                                let formatter: DateFormatter = {
-                                    let formatter = DateFormatter()
-                                    formatter.dateFormat = "HH:mm:ss"
-                                    return formatter
-                                }()
-                                
-                                self.timeSoFar = "\(formatter.string(from: difference!))"
-                            }
+        
+        
+        if isRecording {
+            VStack {
+                HStack {
+                    VStack {
+                        Text("Practicing")
+                            .font(.title)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding([.top, .horizontal])
+                        Text("\(timeSoFar)")
+                            .padding(.bottom)
+                    }
+                    Button{
+                        withAnimation {
+                            stopRecording()
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    } label: {
+                        Image(systemName: "stop.circle")
+                            .foregroundStyle(.red)
+                        
+                    }
+                    .padding()
                 }
-                Image(systemName: "record.circle")
-                    .scaledToFit()
-                    .foregroundStyle(.red)
+                HStack {
+                    Text("Add Title:")
+                        .frame(width: 80, alignment: .leading)
+                        .foregroundStyle(.secondary)
+                    TextField("", text: $title)
+                        .multilineTextAlignment(.leading)
+                        .overlay(RoundedRectangle(cornerRadius: 5)
+                            .stroke(style: StrokeStyle(lineWidth: 1))
+                                 , alignment: .leading)
+                }
+                .padding()
+                Text("Tags:")
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                FlowHStack {
+                    ForEach(tagTypes) { i in
+                        TagWidget(tag: i, smaller: true, isGrey: true, onTagTapped: onTagTapped)
+                    }
+                }
+                LazyVStack {
+                    
+                }
+               
+                
             }
-            .padding()
-            .popover(isPresented: $isPopoverPresented) {
-                NewTimer(isPresented: $isPopoverPresented, log: $currentRecording, isStarted: $isRecording)
+        } else {
+            Button {
+                withAnimation {
+                    startRecording()
+                }
+            } label: {
+                HStack {
+                    VStack {
+                        Text("Start Practice")
+                            .font(.title)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Text("Latest: \(timeSoFar)")
+                            .onReceive(timer) {_ in
+                                if (isRecording) {
+                                    let difference = Calendar.current.date(from: currentRecording.startTime.differenceBetween(dateToUse: Date()))
+                                    let formatter: DateFormatter = {
+                                        let formatter = DateFormatter()
+                                        formatter.dateFormat = "HH:mm:ss"
+                                        return formatter
+                                    }()
+                                    
+                                    self.timeSoFar = "\(formatter.string(from: difference!))"
+                                }
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    Image(systemName: "hourglass")
+                        .scaledToFit()
+                }
+                .padding()
             }
         }
         
-
+        
         
     }
     
     func startRecording() {
-        currentRecording = MusicLogStorage(title: "New Recording")
-        isPopoverPresented = true
+        currentRecording = MusicLogStorage(title: "")
+        isRecording = true
+        title = ""
+        tags = []
     }
     
     func stopRecording() {
         isRecording = false
         currentRecording.endTime = Date()
+        currentRecording.tags = tags
+        currentRecording.title = title
         modelContext.insert(currentRecording)
         try? modelContext.save()
-
+        
+    }
+    
+    
+    func onTagTapped(tag: Tag) {
+        
+        if tags.contains(tag) {
+            tags.remove(at: tags.firstIndex(of: tag)!)
+            
+        } else {
+            tags.append(tag)
+        }
+        
     }
 }
 
@@ -80,11 +147,11 @@ struct RecordWidget: View {
     Button {
         //As an example
     } label: {
-        RecordWidget()
-            
+        RecordWidget(isRecording: true)
+        
     }
     .buttonBorderShape(.roundedRectangle)
     .buttonStyle(.bordered)
     .padding(40)
-
+    
 }

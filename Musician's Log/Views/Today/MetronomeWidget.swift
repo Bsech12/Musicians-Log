@@ -15,6 +15,9 @@ struct MetronomeWidget: View {
     @ObservedObject var metronome: MetronomeController = MetronomeController(beatsPerMinute: 100)
     var body: some View {
         VStack {
+            Text("Metronome")
+                .font(.headline)
+                .foregroundStyle(.primary)
             HStack {
                 Circle()
                     .fill(metronome.counter % 2 == 0 ? Color.green : Color.gray)
@@ -27,13 +30,18 @@ struct MetronomeWidget: View {
             HStack {
                 
                 TextField("", text: $metronomeSpeedText)
-                    .padding()
                     .keyboardType(.numberPad)
+                    .overlay(RoundedRectangle(cornerRadius: 5)
+                        .stroke(style: StrokeStyle(lineWidth: 1))
+                             , alignment: .leading)
+                    .padding()
                 Stepper("", value: $metronomeSpeed, in: 0...1000)
                     .onChange(of: metronomeSpeed) {
                         metronomeSpeedText = String(metronomeSpeed)
                         metronome.beatsPerMinute = metronomeSpeed
                     }
+                    .frame(maxWidth: 100)
+                    .padding()
             }
             Button(metronome.isRunning ? "Stop" : "Start") {
                 if metronome.isRunning {
@@ -42,7 +50,8 @@ struct MetronomeWidget: View {
                     metronome.start()
                 }
             }
-            .foregroundStyle(metronome.isRunning ? .red : .accentColor)
+            .buttonStyle(.borderedProminent)
+            .tint(metronome.isRunning ? .red : .accentColor)
             .toolbar {
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
@@ -60,15 +69,5 @@ struct MetronomeWidget: View {
 }
 
 #Preview {
-    Button {
-        //As an example
-        //As an example
-    } label: {
-        MetronomeWidget()
-            
-    }
-    .buttonBorderShape(.roundedRectangle)
-    .buttonStyle(.bordered)
-    .padding(40)
-
+    MetronomeWidget()
 }
