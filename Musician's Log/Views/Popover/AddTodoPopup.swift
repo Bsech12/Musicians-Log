@@ -64,7 +64,7 @@ struct AddTodoPopup: View {
                 }
             }
             Button() {
-                var newTodo: ToDoStorage = ToDoStorage(title: name, tags: tags, importance: importance, dueDate: date)
+                let newTodo: ToDoStorage = ToDoStorage(title: name, tags: tags, importance: importance, dueDate: date)
                 modelContext.insert(newTodo)
                 try? modelContext.save()
                 showPopup = false

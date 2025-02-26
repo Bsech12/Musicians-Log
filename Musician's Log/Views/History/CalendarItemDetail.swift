@@ -31,6 +31,8 @@ struct CalendarItemDetail: View {
     
     @State var tags: [Tag] = []
     @State var notes: String = ""
+    
+    @State var recordings: [RecorderClass] = []
 
     @State var confirmationShown = false
     
@@ -153,6 +155,11 @@ struct CalendarItemDetail: View {
                         }.padding()
                         
                     }
+                    Section("Recordings") {
+                        ForEach(recordings, id: \.self) { i in
+                            RecordingButton(recordingClass: i, /*recordingName: $i,*/ isEditing: .constant(false))
+                        }
+                    }
                     Section("Completed Tasks") { //TODO: not done yet
                         ForEach(calendarItem.todosCompleted, id: \.self) { todo in
                             TodoItem(item: todo)
@@ -219,6 +226,10 @@ struct CalendarItemDetail: View {
         tags = calendarItem.tags
         notes = calendarItem.notes
         startingDate = calendarItem.startTime
+        recordings.removeAll()
+        for recording in calendarItem.recordings {
+            recordings.append(RecorderClass(recordingName: recording))
+        }
         if let endTime = calendarItem.endTime {
             endingDate = endTime
             endingStringDate = endTime.formatted(date: .numeric, time: .standard)

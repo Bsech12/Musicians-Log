@@ -109,7 +109,7 @@ extension View {
     }
 }
 
-extension Color: RawRepresentable {
+extension Color: @retroactive RawRepresentable {
 
     public init?(rawValue: String) {
         
@@ -119,7 +119,7 @@ extension Color: RawRepresentable {
         }
         
         do{
-            let color = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? UIColor ?? .black
+            let color = try NSKeyedUnarchiver.unarchivedObject(ofClass: UIColor.self, from: data) ?? .black
             self = Color(color)
         }catch{
             self = .black
@@ -169,3 +169,26 @@ extension UIApplication {
         sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
+
+extension Double {
+    
+    func secondsToHoursMinutesSeconds(seconds: Double) -> (Double, Double, Double) {
+      let (hr,  minf) = modf(seconds / 3600)
+      let (min, secf) = modf(60 * minf)
+      return (hr, min, 60 * secf)
+    }
+    
+    func rounded(_ places:Int) -> String {
+        return String(format: "%.\(places)f", self)
+    }
+    
+    func toHMS() -> String{
+        let (h, m, s) = secondsToHoursMinutesSeconds(seconds: self)
+        if(h > 0) {
+            return ("\(h.rounded(0)):\(m.rounded(0)):\(s.rounded(2))")
+        } else {
+            return("\(m.rounded(0)):\(s.rounded(2))")
+        }
+    }
+}
+

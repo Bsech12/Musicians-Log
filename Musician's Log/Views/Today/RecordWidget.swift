@@ -22,6 +22,7 @@ struct RecordWidget: View {
     
     @State var title: String = ""
     @State var tags: [Tag] = []
+    @State var recordings: [RecorderClass] = []
     
     @Query(sort: \Tag.name) var tagTypes: [Tag]
     
@@ -45,7 +46,7 @@ struct RecordWidget: View {
                             stopRecording()
                         }
                     } label: {
-                        Image(systemName: "stop.circle")
+                        Image(systemName: "stop.fill")
                             .foregroundStyle(.red)
                         
                     }
@@ -71,9 +72,14 @@ struct RecordWidget: View {
                     }
                 }
                 LazyVStack {
-                    
+                    ForEach(recordings, id: \.self) { i in
+                        RecordingButton(recordingClass: i, /*recordingName: $i,*/ isEditing: .constant(false))
+                    }
+                    Button("Add") {
+                        recordings.append(RecorderClass(recordingName: UUID().uuidString))
+                    }
+                    .buttonStyle(.borderedProminent)
                 }
-               
                 
             }
         } else {
@@ -117,6 +123,7 @@ struct RecordWidget: View {
         currentRecording = MusicLogStorage(title: "")
         isRecording = true
         title = ""
+        recordings = []
         tags = []
     }
     
@@ -125,6 +132,9 @@ struct RecordWidget: View {
         currentRecording.endTime = Date()
         currentRecording.tags = tags
         currentRecording.title = title
+        for recording in recordings {
+            currentRecording.recordings.append(recording.fileName)
+        }
         modelContext.insert(currentRecording)
         try? modelContext.save()
         

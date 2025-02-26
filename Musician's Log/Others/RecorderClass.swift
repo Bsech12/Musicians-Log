@@ -27,8 +27,11 @@ class RecorderClass : NSObject , ObservableObject , AVAudioPlayerDelegate {
     private var sourceTimer: DispatchSourceTimer?
     private let queue = DispatchQueue(label: "update.timer")
     
+    var fileName: String
     
-    override init(){
+    
+    init(recordingName: String){
+        self.fileName = recordingName
         super.init()
         self.sourceTimer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags.strict, queue: self.queue)
     }
@@ -41,7 +44,7 @@ class RecorderClass : NSObject , ObservableObject , AVAudioPlayerDelegate {
         sourceTimer?.cancel()
     }
     
-    func startRecording(_ fileNamed: String){
+    func startRecording(){
         
         let recordingSession = AVAudioSession.sharedInstance()
         do {
@@ -52,7 +55,7 @@ class RecorderClass : NSObject , ObservableObject , AVAudioPlayerDelegate {
         }
         
         
-        let fileName = URL.documentsDirectory.appending(path: "\(fileNamed).m4a")
+        let filePath = URL.documentsDirectory.appending(path: "\(fileName).m4a")
         
         
         
@@ -65,7 +68,7 @@ class RecorderClass : NSObject , ObservableObject , AVAudioPlayerDelegate {
         
         
         do {
-            audioRecorder = try AVAudioRecorder(url: fileName, settings: settings)
+            audioRecorder = try AVAudioRecorder(url: filePath, settings: settings)
             audioRecorder.prepareToRecord()
             audioRecorder.record()
             isRecording = true
@@ -82,7 +85,7 @@ class RecorderClass : NSObject , ObservableObject , AVAudioPlayerDelegate {
         stopTimer()
     }
     
-    func startPlaying(fileName : String) {
+    func startPlaying() {
         let playSession = AVAudioSession.sharedInstance()
         
         do {
@@ -129,7 +132,7 @@ class RecorderClass : NSObject , ObservableObject , AVAudioPlayerDelegate {
         startTimer()
     }
     
-    func playPause(_ fileName: String) {
+    func playPause() {
         if isPlaying {
             pausePlaying()
         } else {
@@ -139,7 +142,7 @@ class RecorderClass : NSObject , ObservableObject , AVAudioPlayerDelegate {
                     return
                 }
             }
-            startPlaying(fileName: fileName)
+            startPlaying()
         }
         
         

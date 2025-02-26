@@ -18,6 +18,8 @@ final class MusicLogStorage {
     var title: String
     var notes: String
     
+    var recordings: [String] = []
+    
     var todosCompleted: [ToDoStorage]
     
     func getColors() -> [Color] {
@@ -35,6 +37,7 @@ final class MusicLogStorage {
         self.title = title
         self.notes = notes
         self.todosCompleted = []
+        self.recordings = []
     }
 }
 
