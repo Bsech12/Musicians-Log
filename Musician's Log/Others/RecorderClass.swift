@@ -44,6 +44,27 @@ class RecorderClass : NSObject , ObservableObject , AVAudioPlayerDelegate {
         sourceTimer?.cancel()
     }
     
+    func deleteFile() {
+        
+        let fileManager = FileManager.default
+
+        let filePath = URL.documentsDirectory.appending(path: "\(fileName).m4a")
+
+        do {
+
+            try fileManager.removeItem(at: filePath)
+
+            print("File deleted successfully: \(fileName)")
+
+        } catch {
+
+            print("Error deleting file: \(error.localizedDescription)")
+
+        }
+
+    }
+
+    
     func startRecording(){
         
         let recordingSession = AVAudioSession.sharedInstance()

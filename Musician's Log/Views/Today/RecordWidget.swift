@@ -73,7 +73,7 @@ struct RecordWidget: View {
                 }
                 LazyVStack {
                     ForEach(recordings, id: \.self) { i in
-                        RecordingButton(recordingClass: i, /*recordingName: $i,*/ isEditing: .constant(false))
+                        RecordingButton(recordingClass: i)
                     }
                     Button("Add") {
                         recordings.append(RecorderClass(recordingName: UUID().uuidString))

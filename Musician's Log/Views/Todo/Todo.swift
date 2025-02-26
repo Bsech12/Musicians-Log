@@ -79,7 +79,7 @@ struct Todo: View {
                         }
                         .padding()
                         .buttonStyle(.borderedProminent)
-                        .frame(width: .infinity, height: .infinity, alignment: .bottomTrailing)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
                     }
                 }
                 

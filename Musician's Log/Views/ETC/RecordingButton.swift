@@ -10,38 +10,29 @@ import AVFoundation
 
 struct RecordingButton: View {
     
-    @ObservedObject  var recordingClass: RecorderClass
-    
-//    @Binding var recordingName: String
+    @ObservedObject var recordingClass: RecorderClass
     
     @State var hasRecordingYet: Bool = false
     @State var duration: TimeInterval = 0
     
-    @Binding var isEditing: Bool
     @State var deleteRecording: Bool = false
-    
-//    init(recordingName: Binding<String>, isEditing: Binding<Bool>) {
-//        self.recordingClass = .init(recordingName: recordingName.wrappedValue)
-//        self._recordingName = recordingName
-//        self._isEditing = isEditing
-//    }
-//    
+
     var body: some View {
         ZStack {
-            if isEditing && hasRecordingYet{
-                HStack {
-                    Button {
-                        print("totally working")
-                        deleteRecording = true
-                    } label: {
-                        Image(systemName: "trash")
-                            .foregroundStyle(Color.red)
-                        
-                    }
-                    .buttonStyle(.plain)
-                    .padding(.leading, -250)
-                }
-            }
+//            if isEditing && hasRecordingYet{
+//                HStack {
+//                    Button {
+//                        print("totally working")
+//                        deleteRecording = true
+//                    } label: {
+//                        Image(systemName: "trash")
+//                            .foregroundStyle(Color.red)
+//                        
+//                    }
+//                    .buttonStyle(.plain)
+//                    .padding(.leading, -250)
+//                }
+//            }
             HStack {
                 Text(hasRecordingYet ? "Recording: " :"Add a new Recording: ")
                 if(recordingClass.isRecording) {
@@ -103,26 +94,11 @@ struct RecordingButton: View {
             }
             
         }
-        .alert(isPresented: $deleteRecording) {
-            Alert(title: Text("Confirm Recording Deletion"),
-                  message: Text("Are you sure you want to delete this Recording? This and action cannot be undone"),
-                  primaryButton: .destructive(Text("Delete")) {
-                withAnimation {
-//                    recordingName = UUID().uuidString
-                    tryHasRecordingYet()
-                }
-            },
-                  secondaryButton: .cancel())
-            
-        }
+        
         
         .onAppear() {
             tryHasRecordingYet()
         }
-//        .onChange(of: recordingName) {
-//            tryHasRecordingYet()
-//        }
-        
         .frame(maxWidth: 1000)
     }
     
@@ -142,5 +118,5 @@ struct RecordingButton: View {
 
 #Preview {
     @Previewable @State var recorderClass: RecorderClass = .init(recordingName: "newman")
-    RecordingButton(recordingClass: recorderClass, /*recordingName: .constant("newRecording"),*/ isEditing: .constant(true))
+    RecordingButton(recordingClass: recorderClass)
 }

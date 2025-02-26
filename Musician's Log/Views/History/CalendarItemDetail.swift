@@ -33,9 +33,11 @@ struct CalendarItemDetail: View {
     @State var notes: String = ""
     
     @State var recordings: [RecorderClass] = []
+    @State var recordingsToDelete: [RecorderClass] = []
 
     @State var confirmationShown = false
-    
+    @State var deleteRecording: Bool = false
+
     var body: some View {
         VStack {
             if(isNew) {
@@ -94,6 +96,36 @@ struct CalendarItemDetail: View {
                             }
                         }
                         .padding()
+                    }
+                    Section("Recordings") {
+                        ForEach(recordings, id: \.self) { i in
+                            HStack {
+                                Button {
+                                    print("totally working")
+                                    deleteRecording = true
+                                } label: {
+                                    Image(systemName: "trash")
+                                        .foregroundStyle(Color.red)
+                                    
+                                }
+                                .padding()
+                                .buttonStyle(.plain)
+                                
+                                RecordingButton(recordingClass: i)
+                                    .alert(isPresented: $deleteRecording) {
+                                        Alert(title: Text("Confirm Recording Deletion"),
+                                              message: Text("Are you sure you want to delete this Recording? Onced saved, this and action cannot be undone"),
+                                              primaryButton: .destructive(Text("Delete")) {
+                                            withAnimation {
+                                                recordings.removeAll(where: { $0 == i })
+                                                recordingsToDelete.append(i)
+                                            }
+                                        },
+                                              secondaryButton: .cancel())
+                                        
+                                    }
+                            }
+                        }
                     }
                     Section("Completed Tasks") {
                         ForEach(calendarItem.todosCompleted, id: \.self) { todo in
@@ -157,7 +189,7 @@ struct CalendarItemDetail: View {
                     }
                     Section("Recordings") {
                         ForEach(recordings, id: \.self) { i in
-                            RecordingButton(recordingClass: i, /*recordingName: $i,*/ isEditing: .constant(false))
+                            RecordingButton(recordingClass: i)
                         }
                     }
                     Section("Completed Tasks") { //TODO: not done yet
@@ -201,7 +233,12 @@ struct CalendarItemDetail: View {
                         calendarItem.notes = notes
                         calendarItem.startTime = startingDate
                         calendarItem.endTime = endingDate
+                        for r in recordingsToDelete {
+                            r.deleteFile()
+                            calendarItem.recordings.removeAll { $0 == r.fileName }
+                        }
                     }
+                    
                     
                     isEditing.toggle()
                     updateEditableInfo()
@@ -227,6 +264,8 @@ struct CalendarItemDetail: View {
         notes = calendarItem.notes
         startingDate = calendarItem.startTime
         recordings.removeAll()
+        recordingsToDelete.removeAll()
+        
         for recording in calendarItem.recordings {
             recordings.append(RecorderClass(recordingName: recording))
         }
