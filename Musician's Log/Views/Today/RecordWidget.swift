@@ -96,14 +96,7 @@ struct RecordWidget: View {
                         Text("Latest: \(timeSoFar)")
                             .onReceive(timer) {_ in
                                 if (isRecording) {
-                                    let difference = Calendar.current.date(from: currentRecording.startTime.differenceBetween(dateToUse: Date()))
-                                    let formatter: DateFormatter = {
-                                        let formatter = DateFormatter()
-                                        formatter.dateFormat = "HH:mm:ss"
-                                        return formatter
-                                    }()
-                                    
-                                    self.timeSoFar = "\(formatter.string(from: difference!))"
+                                    self.timeSoFar = currentRecording.startTime.differenceBetween(dateToUse: Date()).toHMS()
                                 }
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)

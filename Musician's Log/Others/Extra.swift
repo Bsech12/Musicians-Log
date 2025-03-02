@@ -78,7 +78,7 @@ extension Date {
         return 0
     }
     func differenceBetween(dateToUse: Date) -> DateComponents{
-        let diffs = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: self, to: dateToUse)
+        let diffs = Calendar.current.dateComponents([.hour, .minute, .second], from: self, to: dateToUse)
         return diffs
     }
     func basicallyTheSameAs(_ dateToUse: Date) -> Bool {
@@ -184,11 +184,41 @@ extension Double {
     
     func toHMS() -> String{
         let (h, m, s) = secondsToHoursMinutesSeconds(seconds: self)
-        if(h > 0) {
-            return ("\(h.rounded(0)):\(m.rounded(0)):\(s.rounded(2))")
-        } else {
-            return("\(m.rounded(0)):\(s.rounded(2))")
+        
+        var hourString = h.rounded(0)
+        var minuteString = m.rounded(0)
+        var secondString = s.rounded(0)
+        
+        if (h) <= 9 {
+            hourString = "0\(hourString)"
         }
+        if (m) <= 9 {
+            minuteString = "0\(minuteString)"
+        }
+        if (s) <= 9 {
+            secondString = "0\(secondString)"
+        }
+        
+        return("\(hourString):\(minuteString):\(secondString)")
     }
 }
 
+extension DateComponents {
+    func toHMS() -> String {
+        var hourString = String(self.hour ?? 0)
+        var minuteString = String(self.minute ?? 0)
+        var secondString = String(self.second ?? 0)
+        
+        if (self.hour ?? 0) <= 9 {
+            hourString = "0\(self.hour ?? 0)"
+        }
+        if (self.minute ?? 0) <= 9 {
+            minuteString = "0\(self.minute ?? 0)"
+        }
+        if (self.second ?? 0) <= 9 {
+            secondString = "0\(self.second ?? 0)"
+        }
+        
+        return("\(hourString):\(minuteString):\(secondString)")
+    }
+}

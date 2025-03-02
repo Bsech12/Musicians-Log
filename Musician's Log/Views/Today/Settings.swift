@@ -84,12 +84,23 @@ struct Settings: View {
                 }
                 
             }
-            Section() {
-                Text("About me")
-                Text("Special Thanks:")
-                Text("Acknowledgements")
+            Section("About") {
+                NavigationLink(destination: AboutMe()) {
+                   Text("About Me")
+                }
+                NavigationLink(destination: AboutTheProject()) {
+                   Text("About the Project")
+                }
+                NavigationLink(destination: Acknowledgements()) {
+                    Text("Acknowledgements")
+                }
                 
             }
+            Section("Contact Me!") {
+                Text("If you have any probelms feel free to email me:")
+                Text("talker-ascents5s@icloud.com")
+            }
+            Section("Thanks for using my app :)") {}
             
         }
         

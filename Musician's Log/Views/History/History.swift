@@ -104,7 +104,7 @@ struct History: View {
                                             .frame(width: 3, height: 10)
                                             .padding(4)
                                     }
-                                    Text("Total Hours for day: \(totalHoursForToday())")
+                                    Text("Total Hours for day: \(totalHoursForToday().rounded(2))")
                                 }
                                 .padding()
                             }
@@ -148,14 +148,14 @@ struct History: View {
             .navigationDestination(isPresented: $navigationPresented) {
                 if navigationPresentedItem != nil{
                     CalendarItemDetail(isNew: .constant(false), calendarItem: navigationPresentedItem ?? MusicLogStorage(title: "New Broken Thing", startTime: dateFocused))
-                        .onDisappear {
-                            isPresented = true
-                        }
+//                        .onDisappear {
+//                            isPresented = true
+//                        }
                 }
                 
             }
             .onChange(of: tabSelected) {
-                isPresented = (tabSelected == 0)
+                isPresented = (tabSelected == 0) && !(newPresented || navigationPresented)
             }
             .safeAreaInset(edge:.top) {
                 VStack {
@@ -225,9 +225,12 @@ struct History: View {
             }
             .popover(isPresented: $newPresented) {
                 CalendarItemDetail(isNew: $newPresented, calendarItem: newItem ?? MusicLogStorage(title: "New Thing", startTime: dateFocused))
-                    .onDisappear() {
-                        isPresented = true
-                    }
+            }
+            .onChange(of: newPresented) {
+                isPresented = !(newPresented || navigationPresented)
+            }
+            .onAppear() {
+                isPresented = !(newPresented || navigationPresented)
             }
 
             
@@ -285,16 +288,18 @@ struct History: View {
             selected = fullscreen.isLarge() ? dateFocused.firstDayOfTheWeek.dayInt : dateFocused.dayInt
         }
     }
-    func totalHoursForToday() -> Int {
-        var hours: Int = 0
+    func totalHoursForToday() -> Double {
+        var seconds: Double = 0
         
         for log in logs where log.startTime.dayInt == dateFocused.dayInt && log.startTime.monthInt == dateFocused.monthInt && log.startTime.yearInt == dateFocused.yearInt{
             if let endTime = log.endTime {
-                hours += (log.startTime.differenceBetween(dateToUse: endTime).hour ?? 0)
+                
+                let diffs = Calendar.current.dateComponents([.second], from: log.startTime, to: endTime)
+                seconds += Double(diffs.second ?? 0)
             }
             
         }
-        return hours
+        return seconds/60/60
     }
     func colorsForDay(_ day: Int) -> [Color] {
         var colors: [Color] = []

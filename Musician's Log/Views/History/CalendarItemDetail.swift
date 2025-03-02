@@ -127,15 +127,15 @@ struct CalendarItemDetail: View {
                             }
                         }
                     }
-                    Section("Completed Tasks") {
-                        ForEach(calendarItem.todosCompleted, id: \.self) { todo in
-                            TodoItem(item: todo)
-                        }
-                        
-                        if(calendarItem.todosCompleted.isEmpty) {
-                            Text("No tasks completed")
-                        }
-                    }
+//                    Section("Completed Tasks") {
+//                        ForEach(calendarItem.todosCompleted, id: \.self) { todo in
+//                            TodoItem(item: todo)
+//                        }
+//                        
+//                        if(calendarItem.todosCompleted.isEmpty) {
+//                            Text("No tasks completed")
+//                        }
+//                    }
                     Section("Notes") {
                         TextField("Notes", text: $notes, axis: .vertical)
                             .lineLimit(5...10)
@@ -192,15 +192,15 @@ struct CalendarItemDetail: View {
                             RecordingButton(recordingClass: i)
                         }
                     }
-                    Section("Completed Tasks") { //TODO: not done yet
-                        ForEach(calendarItem.todosCompleted, id: \.self) { todo in
-                            TodoItem(item: todo)
-                        }
-                        
-                        if(calendarItem.todosCompleted.isEmpty) {
-                            Text("No tasks completed")
-                        }
-                    }
+//                    Section("Completed Tasks") { //TODO: not done yet
+//                        ForEach(calendarItem.todosCompleted, id: \.self) { todo in
+//                            TodoItem(item: todo)
+//                        }
+//                        
+//                        if(calendarItem.todosCompleted.isEmpty) {
+//                            Text("No tasks completed")
+//                        }
+//                    }
                     Section("Notes") {
                         Text(notes)
                             .lineLimit(5...10)
@@ -282,15 +282,7 @@ struct CalendarItemDetail: View {
     
     func updateTotalTime() {
         if let endTime = endingDate {
-            let difference = Calendar.current.date(from: calendarItem.startTime.differenceBetween(dateToUse: endTime))
-            
-            let formatter: DateFormatter = {
-                let formatter = DateFormatter()
-                formatter.dateFormat = "HH:mm:ss"
-                return formatter
-            }()
-            
-            totalTimeString = formatter.string(from: difference!)
+            totalTimeString = calendarItem.startTime.differenceBetween(dateToUse: endTime).toHMS()
         }
         
         
