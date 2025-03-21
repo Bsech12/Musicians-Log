@@ -43,11 +43,11 @@ struct Today: View {
                             }
                             Spacer()
                         }
-                       TunerWidget(hasPermission: hasRecordPermission)
+                       TunerWidget(hasPermission: $hasRecordPermission)
                             .environment(conductor)
                     }
                 }
-                Section("Todos") {
+                Section("To do") {
                     ForEach(toDos){ todo in
                         TodoItem(item: todo)
                     }

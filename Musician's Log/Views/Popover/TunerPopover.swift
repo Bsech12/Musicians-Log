@@ -11,12 +11,12 @@ import SwiftTuner
 struct TunerPopover: View {
     @Binding var tuner: TunerConductor
     var body: some View {
-        TunerWidget(hasPermission: true)
+        TunerWidget(hasPermission: .constant(true))
             .environment(tuner)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
 #Preview {
-    TunerPopover(tuner: .constant(.init()))
+    TunerPopover(tuner: .constant(.init(isMockingInput: true)))
 }

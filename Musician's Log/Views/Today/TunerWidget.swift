@@ -10,7 +10,7 @@ import SwiftTuner
 
 struct TunerWidget: View {
     @Environment(TunerConductor.self) var conductor: TunerConductor
-    @State var hasPermission: Bool
+    @Binding var hasPermission: Bool
 
     var body: some View {
         VStack {
@@ -42,11 +42,14 @@ struct TunerWidget: View {
                     }
                 }
             }
+            .onAppear {
+                conductor.start()
+            }
         }
     }
 }
 
 #Preview {
-    TunerWidget(hasPermission: false)
+    TunerWidget(hasPermission: .constant(true))
         .environment(TunerConductor(isMockingInput: true))
 }

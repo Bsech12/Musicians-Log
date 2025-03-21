@@ -64,7 +64,7 @@ struct Todo: View {
                     
                 }
                 .scrollContentBackground(.hidden)
-                .navigationTitle("Todo")
+                .navigationTitle("To do")
                 
                 
                 VStack {

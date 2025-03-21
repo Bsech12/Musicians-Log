@@ -32,7 +32,7 @@ struct AddTodoPopup: View {
                 }
                 .padding()
             }
-            Text("Add Todo")
+            Text("Add To do")
                 .font(.headline)
             Form {
                 Section {

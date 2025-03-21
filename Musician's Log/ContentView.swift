@@ -21,7 +21,7 @@ struct ContentView: View {
             Tab("Today", systemImage: "music.note.house.fill", value: 1) {
                 Today()
             }
-            Tab("Todo", systemImage: "checklist.unchecked", value: 2) {
+            Tab("To do", systemImage: "checklist.unchecked", value: 2) {
                 Todo()
             }
             

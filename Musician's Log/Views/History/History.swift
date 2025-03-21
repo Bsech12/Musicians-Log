@@ -138,7 +138,7 @@ struct History: View {
                         .interactiveDismissDisabled()
                         .presentationBackgroundInteraction(.enabled)
                         .presentationBackground(.thinMaterial)
-                        .presentationDetents([.height(geo.size.height - 360), .newLarge(height: geo.size.height - 80)], selection: $fullscreen ) //.fraction(0.3), .fraction(0.7),
+                        .presentationDetents([.height((geo.size.height -  getSubtractedHeight()).clamped(to: 50...(10000))), .newLarge(height: geo.size.height - 80)], selection: $fullscreen ) //.fraction(0.3), .fraction(0.7),
                         .bottomMaskForSheet()
                         
                     }
@@ -147,7 +147,7 @@ struct History: View {
             }
             .navigationDestination(isPresented: $navigationPresented) {
                 if navigationPresentedItem != nil{
-                    CalendarItemDetail(isNew: .constant(false), calendarItem: navigationPresentedItem ?? MusicLogStorage(title: "New Broken Thing", startTime: dateFocused))
+                    CalendarItemDetail(isNew: .constant(false), calendarItem: navigationPresentedItem ?? MusicLogStorage(title: "New Event", startTime: dateFocused))
 //                        .onDisappear {
 //                            isPresented = true
 //                        }
@@ -216,7 +216,7 @@ struct History: View {
                 ToolbarItem {
                     Button {
                         newPresented = true
-                        newItem = MusicLogStorage(title: "New Thing", startTime: dateFocused)
+                        newItem = MusicLogStorage(title: "New Event", startTime: dateFocused)
                         
                     } label: {
                         Image(systemName: "plus")
@@ -224,7 +224,7 @@ struct History: View {
                 }
             }
             .popover(isPresented: $newPresented) {
-                CalendarItemDetail(isNew: $newPresented, calendarItem: newItem ?? MusicLogStorage(title: "New Thing", startTime: dateFocused))
+                CalendarItemDetail(isNew: $newPresented, calendarItem: newItem ?? MusicLogStorage(title: "New Event", startTime: dateFocused))
             }
             .onChange(of: newPresented) {
                 isPresented = !(newPresented || navigationPresented)
@@ -237,6 +237,11 @@ struct History: View {
             
         }
         
+    }
+    func getSubtractedHeight() -> CGFloat{
+        let weeks = CGFloat(Double(calendar.range(of: .weekOfMonth, in: .month, for: dateFocused)!.count).rounded(.up))
+        
+        return 70 + (weeks * 60)
     }
     
     func updateDate() {
